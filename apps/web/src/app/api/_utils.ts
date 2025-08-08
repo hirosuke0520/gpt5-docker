@@ -18,7 +18,9 @@ export async function proxy(req: NextRequest, path: string) {
     method: req.method,
     headers: {
       'content-type': req.headers.get('content-type') || undefined,
-      origin: `${url.protocol}//${url.host}`
+      origin: `${url.protocol}//${url.host}`,
+      // forward cookies for auth
+      cookie: req.headers.get('cookie') || ''
     },
     body: req.method === 'GET' || req.method === 'HEAD' ? undefined : await req.text(),
     credentials: 'include'
