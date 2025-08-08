@@ -1,5 +1,6 @@
 import './globals.css';
 import React from 'react';
+import AuthHeader from '@/components/AuthHeader';
 
 export const metadata = {
   title: 'Mini CRM',
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <a className="underline" href="/deals">Deals</a>
               <a className="underline" href="/companies">Companies</a>
             </nav>
+            <AuthHeader />
           </header>
           {children}
         </div>
