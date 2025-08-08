@@ -1,6 +1,5 @@
 async function getKpis() {
-  const apiBase = process.env.API_BASE_URL || 'http://localhost:8787';
-  const res = await fetch(`${apiBase}/kpis`, { cache: 'no-store', credentials: 'include' as any });
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/kpis`, { cache: 'no-store' });
   if (!res.ok) return { todayLeads: 0, openDealsTotal: 0, dueActivities: 0 };
   return res.json();
 }
