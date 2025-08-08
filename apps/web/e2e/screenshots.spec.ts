@@ -7,9 +7,9 @@ async function ensureDir() {
   try { fs.mkdirSync(outDir, { recursive: true }); } catch {}
 }
 
-test('capture key pages', async ({ page }) => {
+test('capture key pages', async ({ page, baseURL }) => {
   await ensureDir();
-  await page.goto('/login');
+  await page.goto(`${baseURL}/login`);
   await page.screenshot({ path: `${outDir}/login.png`, fullPage: true });
 
   await page.getByLabel('Email').fill('admin@example.com');
@@ -18,16 +18,16 @@ test('capture key pages', async ({ page }) => {
   await page.waitForURL('**/dashboard');
   await page.screenshot({ path: `${outDir}/dashboard.png`, fullPage: true });
 
-  await page.goto('/leads');
+  await page.goto(`${baseURL}/leads`);
   await page.screenshot({ path: `${outDir}/leads.png`, fullPage: true });
 
   const firstLead = page.locator('table tbody tr').first();
   await firstLead.getByRole('link').click();
   await page.screenshot({ path: `${outDir}/lead-detail.png`, fullPage: true });
 
-  await page.goto('/deals');
+  await page.goto(`${baseURL}/deals`);
   await page.screenshot({ path: `${outDir}/deals.png`, fullPage: true });
 
-  await page.goto('/companies');
+  await page.goto(`${baseURL}/companies`);
   await page.screenshot({ path: `${outDir}/companies.png`, fullPage: true });
 });

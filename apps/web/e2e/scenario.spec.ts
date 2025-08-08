@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-test('login→lead作成→deal作成→kanbanでstage変更→activity完了', async ({ page }) => {
+test('login→lead作成→deal作成→kanbanでstage変更→activity完了', async ({ page, baseURL }) => {
   test.setTimeout(120_000);
-  await page.goto('/login');
+  await page.goto(`${baseURL}/login`);
   await page.getByLabel('Email').fill('admin@example.com');
   await page.getByLabel('Password').fill('password123');
   await page.getByRole('button', { name: 'Login' }).click();
@@ -12,7 +12,7 @@ test('login→lead作成→deal作成→kanbanでstage変更→activity完了', 
   await page.getByPlaceholder('New company name').fill('Play Co');
   await page.getByRole('button', { name: 'Create' }).click();
 
-  await page.goto('/leads');
+  await page.goto(`${baseURL}/leads`);
   // 新規Lead作成
   await page.getByPlaceholder('Contact name').fill('Play Lead');
   await page.getByRole('button', { name: 'Create Lead' }).click();
@@ -26,7 +26,7 @@ test('login→lead作成→deal作成→kanbanでstage変更→activity完了', 
   await page.getByRole('button', { name: 'Add Activity' }).click();
   await page.getByRole('button', { name: /Mark as/ }).first().click();
 
-  await page.goto('/deals');
+  await page.goto(`${baseURL}/deals`);
   // 新規Deal作成
   // 新しく作成したLeadのIDを末尾の行から取るのが確実だが、簡便に1を使う（存在しない場合はスキップ）
   await page.getByPlaceholder('Lead ID').fill('1');
