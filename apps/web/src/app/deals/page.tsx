@@ -14,10 +14,12 @@ export default function DealsKanbanPage() {
     (async () => {
       try {
         const res = await fetch('/api/deals');
-        const data = await res.json();
-        setItems(data.items);
+        if (!res.ok) throw new Error(`Failed to load deals (${res.status})`);
+        const data = await res.json().catch(() => ({ items: [] }));
+        setItems(Array.isArray(data?.items) ? data.items : []);
       } catch (e: any) {
         setError(e.message);
+        setItems([]);
       }
     })();
   }, []);
