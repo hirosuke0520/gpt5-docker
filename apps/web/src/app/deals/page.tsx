@@ -8,6 +8,7 @@ const stages: Deal['stage'][] = ['prospecting', 'proposal', 'negotiation', 'won'
 export default function DealsKanbanPage() {
   const [items, setItems] = useState<Deal[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [dragId, setDragId] = useState<number | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -50,11 +51,29 @@ export default function DealsKanbanPage() {
       {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
         {stages.map((stage) => (
-          <div key={stage} className="bg-gray-50 border rounded p-2 min-h-[200px]">
+          <div
+            key={stage}
+            className="bg-gray-50 border rounded p-2 min-h-[200px]"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              const idStr = e.dataTransfer.getData('text/plain');
+              const id = Number(idStr);
+              const deal = items.find(d => d.id === id);
+              if (deal) updateStage(deal, stage);
+              setDragId(null);
+            }}
+          >
             <div className="font-semibold capitalize mb-2">{stage}</div>
             <div className="space-y-2">
               {grouped[stage].map((d) => (
-                <div key={d.id} className="bg-white border rounded p-2">
+                <div
+                  key={d.id}
+                  className={`bg-white border rounded p-2 ${dragId === d.id ? 'opacity-50' : ''}`}
+                  draggable
+                  onDragStart={(e) => { e.dataTransfer.setData('text/plain', String(d.id)); setDragId(d.id); }}
+                  onDragEnd={() => setDragId(null)}
+                >
                   <div className="text-sm font-medium">{d.title}</div>
                   <div className="text-xs text-gray-500">{Number(d.amount).toLocaleString()}</div>
                   <div className="mt-2 flex flex-wrap gap-1">
