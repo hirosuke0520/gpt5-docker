@@ -24,7 +24,10 @@ test('login→lead作成→deal作成→kanbanでstage変更→activity完了', 
   // 活動の作成→完了トグル
   await page.getByPlaceholder('Content').fill('Follow up');
   await page.getByRole('button', { name: 'Add Activity' }).click();
-  await page.getByRole('button', { name: /Mark as/ }).first().click();
+  await page.waitForLoadState('networkidle');
+  const markBtn = page.getByRole('button', { name: /Mark as/ }).first();
+  await markBtn.waitFor();
+  await markBtn.click();
 
   await page.goto(`${baseURL}/deals`);
   // 新規Deal作成
