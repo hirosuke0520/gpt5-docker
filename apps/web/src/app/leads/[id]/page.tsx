@@ -1,8 +1,7 @@
 import Link from 'next/link';
 
 async function getLead(id: string) {
-  const apiBase = process.env.API_BASE_URL || 'http://localhost:8787';
-  const res = await fetch(`${apiBase}/leads/${id}`, { cache: 'no-store', credentials: 'include' as any });
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/leads/${id}`, { cache: 'no-store' });
   if (!res.ok) return null;
   return res.json();
 }

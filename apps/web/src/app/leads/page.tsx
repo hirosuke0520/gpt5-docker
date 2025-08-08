@@ -7,9 +7,10 @@ async function getLeads(searchParams: Record<string, string | string[] | undefin
   if (searchParams.q && typeof searchParams.q === 'string') params.set('q', searchParams.q);
   if (searchParams.status && typeof searchParams.status === 'string') params.set('status', searchParams.status);
   if (searchParams.companyId && typeof searchParams.companyId === 'string') params.set('companyId', searchParams.companyId);
-  const apiBase = process.env.API_BASE_URL || 'http://localhost:8787';
-  const res = await fetch(`${apiBase}/leads?${params}`, { cache: 'no-store', credentials: 'include' as any });
-  if (!res.ok) return { items: [], page: 1, pageSize: 20, total: 0 };
+  if (searchParams.page && typeof searchParams.page === 'string') params.set('page', searchParams.page);
+  if (searchParams.pageSize && typeof searchParams.pageSize === 'string') params.set('pageSize', searchParams.pageSize);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/leads?${params}`, { cache: 'no-store' });
+  if (!res.ok) return { items: [], page: 1, pageSize: 20, total: 0 } as any;
   return res.json();
 }
 
@@ -48,6 +49,17 @@ export default async function LeadsPage({ searchParams }: { searchParams: Record
               ))}
             </tbody>
           </table>
+          <div className="flex items-center gap-2 mt-3">
+            <span className="text-sm">Page {data.page} / {Math.max(1, Math.ceil(data.total / data.pageSize))}</span>
+            <div className="ml-auto flex gap-2">
+              {data.page > 1 && (
+                <Link className="underline text-sm" href={`/leads?${new URLSearchParams({ page: String(data.page - 1), pageSize: String(data.pageSize) }).toString()}`}>Prev</Link>
+              )}
+              {data.page * data.pageSize < data.total && (
+                <Link className="underline text-sm" href={`/leads?${new URLSearchParams({ page: String(data.page + 1), pageSize: String(data.pageSize) }).toString()}`}>Next</Link>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
