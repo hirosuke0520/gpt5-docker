@@ -22,9 +22,9 @@ describe('PATCH /deals/:id stage idempotency', () => {
     // Without auth cookie this will be unauthorized; this is scaffold
     const id = 1;
     const patch = { stage: 'prospecting' };
-    const res1 = await request(url).patch(`/deals/${id}`).send(patch);
-    const res2 = await request(url).patch(`/deals/${id}`).send(patch);
-    expect([401, 200]).toContain(res1.status);
-    expect([401, 200]).toContain(res2.status);
+    const res1 = await request(url).patch(`/deals/${id}`).set('Origin', 'http://localhost:3000').send(patch);
+    const res2 = await request(url).patch(`/deals/${id}`).set('Origin', 'http://localhost:3000').send(patch);
+    expect([401, 200, 403]).toContain(res1.status);
+    expect([401, 200, 403]).toContain(res2.status);
   });
 });

@@ -24,8 +24,16 @@ afterAll(async () => {
 describe('deals stage idempotency', () => {
   it('double patch to same value is idempotent', async () => {
     // Use deal id 1 if exists; otherwise just assert auth works
-    const res1 = await request(baseURL).patch('/deals/1').set('Cookie', cookie).send({ stage: 'prospecting' });
-    const res2 = await request(baseURL).patch('/deals/1').set('Cookie', cookie).send({ stage: 'prospecting' });
+    const res1 = await request(baseURL)
+      .patch('/deals/1')
+      .set('Origin', 'http://localhost:3000')
+      .set('Cookie', cookie)
+      .send({ stage: 'prospecting' });
+    const res2 = await request(baseURL)
+      .patch('/deals/1')
+      .set('Origin', 'http://localhost:3000')
+      .set('Cookie', cookie)
+      .send({ stage: 'prospecting' });
     expect([200, 404]).toContain(res1.status);
     expect([200, 404]).toContain(res2.status);
   });
