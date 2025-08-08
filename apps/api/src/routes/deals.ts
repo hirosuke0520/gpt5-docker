@@ -4,12 +4,16 @@ import { prisma } from '../lib/prisma.js';
 
 const router = new Hono();
 
+const dateString = z
+  .string()
+  .refine((v) => !v || !Number.isNaN(Date.parse(v)), 'Invalid date');
+
 const createSchema = z.object({
   leadId: z.number().int(),
   title: z.string().min(1),
   amount: z.number(),
   stage: z.enum(['prospecting', 'proposal', 'negotiation', 'won', 'lost']),
-  expectedCloseDate: z.string().date().optional().or(z.literal('').transform(() => undefined))
+  expectedCloseDate: dateString.optional().transform((v) => (v ? new Date(v) : undefined))
 });
 
 const updateSchema = createSchema.partial();
@@ -29,7 +33,7 @@ router.post('/', async (c) => {
   const body = await c.req.json().catch(() => null);
   const parsed = createSchema.safeParse(body);
   if (!parsed.success) return c.json({ error: { code: 'VALIDATION_ERROR', message: parsed.error.message } }, 400);
-  const created = await prisma.deal.create({ data: parsed.data });
+  const created = await prisma.deal.create({ data: parsed.data as any });
   return c.json(created, 201);
 });
 
@@ -45,7 +49,7 @@ router.patch('/:id', async (c) => {
   const body = await c.req.json().catch(() => null);
   const parsed = updateSchema.safeParse(body);
   if (!parsed.success) return c.json({ error: { code: 'VALIDATION_ERROR', message: parsed.error.message } }, 400);
-  const updated = await prisma.deal.update({ where: { id }, data: parsed.data });
+  const updated = await prisma.deal.update({ where: { id }, data: parsed.data as any });
   return c.json(updated);
 });
 
