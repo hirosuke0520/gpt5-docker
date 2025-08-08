@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import CreateActivityForm from '@/components/forms/CreateActivityForm';
 
 async function getLead(id: string) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/leads/${id}`, { cache: 'no-store' });
@@ -29,8 +30,9 @@ export default async function LeadDetailPage({ params }: { params: { id: string 
             ))}
           </ul>
         </div>
-        <div className="bg-white rounded border p-4">
+        <div className="bg-white rounded border p-4 space-y-3">
           <h3 className="font-semibold mb-2">Activities</h3>
+          <CreateActivityForm leadId={lead.id} />
           <ul className="space-y-2">
             {activities.map((a: any) => (
               <li key={a.id} className="flex items-center justify-between border p-2 rounded">
