@@ -55,6 +55,14 @@ npx playwright install --with-deps
 npm test
 ```
 
+### スクリーンショットの取得
+
+```
+cd apps/web
+npx playwright test screenshots.spec.ts
+# 出力: docs/screenshots/*.png
+```
+
 ## ディレクトリ
 
 ```
