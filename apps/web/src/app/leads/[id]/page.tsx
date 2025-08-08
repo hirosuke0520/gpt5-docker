@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import CreateActivityForm from '@/components/forms/CreateActivityForm';
 
+import { getCookieHeader, makeInternalUrl } from '@/lib/serverFetch';
+
 async function getLead(id: string) {
-  const base = process.env.NEXT_PUBLIC_BASE_URL;
-  const url = base ? `${base}/api/leads/${id}` : `http://localhost:3000/api/leads/${id}`;
-  const res = await fetch(url, { cache: 'no-store' });
+  const url = makeInternalUrl(`/api/leads/${id}`);
+  const res = await fetch(url, { cache: 'no-store', headers: { cookie: getCookieHeader() } });
   if (!res.ok) return null;
   return res.json();
 }

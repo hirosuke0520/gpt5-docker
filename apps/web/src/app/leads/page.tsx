@@ -2,6 +2,8 @@ import Link from 'next/link';
 import LeadsSearch from './search';
 import CreateLeadForm from '@/components/forms/CreateLeadForm';
 
+import { getCookieHeader, makeInternalUrl } from '@/lib/serverFetch';
+
 async function getLeads(searchParams: Record<string, string | string[] | undefined>) {
   const params = new URLSearchParams();
   if (searchParams.q && typeof searchParams.q === 'string') params.set('q', searchParams.q);
@@ -9,9 +11,8 @@ async function getLeads(searchParams: Record<string, string | string[] | undefin
   if (searchParams.companyId && typeof searchParams.companyId === 'string') params.set('companyId', searchParams.companyId);
   if (searchParams.page && typeof searchParams.page === 'string') params.set('page', searchParams.page);
   if (searchParams.pageSize && typeof searchParams.pageSize === 'string') params.set('pageSize', searchParams.pageSize);
-  const base = process.env.NEXT_PUBLIC_BASE_URL;
-  const url = base ? `${base}/api/leads?${params}` : `http://localhost:3000/api/leads?${params}`;
-  const res = await fetch(url, { cache: 'no-store' });
+  const url = makeInternalUrl(`/api/leads?${params}`);
+  const res = await fetch(url, { cache: 'no-store', headers: { cookie: getCookieHeader() } });
   if (!res.ok) return { items: [], page: 1, pageSize: 20, total: 0 } as any;
   return res.json();
 }
