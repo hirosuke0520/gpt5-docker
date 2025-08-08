@@ -2,5 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { color-scheme: light dark; }
+:root { color-scheme: light; }
 body { @apply bg-gray-50 text-gray-900; }
+
+@layer base {
+  input, select, textarea {
+    @apply bg-white text-gray-900 placeholder:text-gray-400 border border-gray-300 rounded;
+  }
+  input:focus, select:focus, textarea:focus {
+    @apply outline-none ring-2 ring-blue-500 border-blue-500;
+  }
+  button { @apply cursor-pointer; }
+}
