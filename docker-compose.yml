@@ -33,7 +33,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: sh -c "npx prisma generate && (npx prisma migrate deploy || npx prisma db push) && node -e \"try{require('tsx/register')}catch{}\" && npm run prisma:seed && npm run dev"
+    command: sh -c "npx prisma generate && if [ -d prisma/migrations ] && [ \"$(ls -A prisma/migrations)\" ]; then npx prisma migrate deploy; else npx prisma db push; fi && node -e \"try{require('tsx/register')}catch{}\" && npm run prisma:seed && npm run dev"
 
   web:
     build: ./apps/web
