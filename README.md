@@ -1,6 +1,10 @@
 # Mini CRM (gpt5-docker)
 
-社内ミニCRM（営業リード・案件・活動管理）。Next.js(App Router) + Hono + Prisma + MySQL。
+社内ミニCRM（営業リード・案件・活動管理）。
+- フロント: Next.js(App Router, TypeScript, Tailwind)
+- API: Hono.js (TypeScript)
+- DB/ORM: MySQL 8 + Prisma
+- 認証: email/password (bcrypt) + JWT(HttpOnly Cookie, SameSite=Lax)
 
 ## クイックスタート
 
@@ -12,22 +16,24 @@
 cp .env.example .env
 ```
 
-2) 起動
+2) 起動（初回はDBスキーマ作成とシード投入まで自動）
 
 ```
 docker compose up --build -d
 ```
 
-初回は `api` サービス起動時に `prisma generate` → `migrate deploy` → `seed` が実行されます。
+初回は `api` サービス起動時に `prisma generate` → `migrate deploy`（マイグレーションが無い場合は `db push`）→ `seed` を実行します。
 
 3) アクセス
 
 - Web: http://localhost:3000
 - API: http://localhost:8787
 
-ログイン例:
+ログイン例（seedで投入済み）:
 - Email: `admin@example.com`
 - Password: `password123`
+
+ログアウトはヘッダー右上の「Logout」から実行できます。
 
 ## テスト
 
@@ -45,7 +51,7 @@ npm run prisma:seed
 npm test
 ```
 
-### E2E テスト
+### E2E テスト（Web + API を起動してから）
 
 ```
 docker compose up -d --build
@@ -68,8 +74,8 @@ npx playwright test screenshots.spec.ts
 ```
 gpt5-docker/
   apps/
-    api/  # Hono + Prisma
-    web/  # Next.js (App Router)
+    api/  # Hono + Prisma + Vitest(supertest) + seed
+    web/  # Next.js (App Router) + Tailwind + Playwright
   docker-compose.yml
 ```
 
