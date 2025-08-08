@@ -31,7 +31,29 @@ docker compose up --build -d
 
 ## テスト
 
-API (Vitest + supertest) と E2E (Playwright) を用意予定。実行方法は後述の「テスト」章に追記します。
+API (Vitest + supertest) と E2E (Playwright) を同梱。
+
+### API テスト
+
+```
+docker compose up -d db
+cd apps/api
+npm install
+npx prisma generate
+npx prisma migrate deploy || npx prisma db push
+npm run prisma:seed
+npm test
+```
+
+### E2E テスト
+
+```
+docker compose up -d --build
+cd apps/web
+npm install
+npx playwright install --with-deps
+npm test
+```
 
 ## ディレクトリ
 
