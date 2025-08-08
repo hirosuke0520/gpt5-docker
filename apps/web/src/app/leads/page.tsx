@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import LeadsSearch from './search';
+import CreateLeadForm from '@/components/forms/CreateLeadForm';
 
 async function getLeads(searchParams: Record<string, string | string[] | undefined>) {
   const params = new URLSearchParams();
@@ -17,7 +18,10 @@ export default async function LeadsPage({ searchParams }: { searchParams: Record
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4">Leads</h2>
-      <LeadsSearch />
+      <div className="mb-4 space-y-3">
+        <LeadsSearch />
+        <CreateLeadForm />
+      </div>
       {data.items.length === 0 ? (
         <p className="text-sm text-gray-500">No leads</p>
       ) : (

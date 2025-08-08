@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useState } from 'react';
 import type { Deal } from '@/types';
+import CreateDealForm from '@/components/forms/CreateDealForm';
 
 const stages: Deal['stage'][] = ['prospecting', 'proposal', 'negotiation', 'won', 'lost'];
 
@@ -44,7 +45,8 @@ export default function DealsKanbanPage() {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Deals (Kanban)</h2>
+      <h2 className="text-xl font-semibold mb-2">Deals (Kanban)</h2>
+      <div className="mb-4"><CreateDealForm /></div>
       {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
         {stages.map((stage) => (
