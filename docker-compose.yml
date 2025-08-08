@@ -1,0 +1,52 @@
+version: '3.9'
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-changeme}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-crm}
+      MYSQL_USER: ${MYSQL_USER:-crm}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-crm}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./apps/api
+    working_dir: /app
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-mysql://crm:crm@db:3306/crm}
+      JWT_SECRET: ${JWT_SECRET:-please-change-me}
+      PORT: ${PORT:-8787}
+      CSRF_ALLOWED_ORIGIN: http://localhost:3000
+    volumes:
+      - ./apps/api:/app
+      - /app/node_modules
+    ports:
+      - "8787:8787"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build: ./apps/web
+    working_dir: /app
+    environment:
+      API_BASE_URL: ${API_BASE_URL:-http://localhost:8787}
+      NODE_ENV: development
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+volumes:
+  db_data:

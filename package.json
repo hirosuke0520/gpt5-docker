@@ -1,0 +1,13 @@
+{
+  "name": "gpt5-docker",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run -w @app/api dev & npm run -w @app/web dev",
+    "build": "npm run -w @app/api build && npm run -w @app/web build",
+    "test": "npm run -w @app/api test && npm run -w @app/web test",
+    "lint": "echo 'no lint at root'"
+  }
+}

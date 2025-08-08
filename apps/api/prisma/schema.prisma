@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(member)
+  createdAt    DateTime @default(now())
+}
+
+enum Role {
+  admin
+  member
+}
+
+model Company {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  domain    String?
+  notes     String?
+  createdAt DateTime @default(now())
+  leads     Lead[]
+}
+
+model Lead {
+  id          Int       @id @default(autoincrement())
+  companyId   Int
+  contactName String
+  email       String?
+  phone       String?
+  source      LeadSource
+  status      LeadStatus
+  score       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  company     Company   @relation(fields: [companyId], references: [id])
+  deals       Deal[]
+  activities  Activity[]
+
+  @@index([status, createdAt])
+}
+
+enum LeadSource {
+  web
+  referral
+  event
+  other
+}
+
+enum LeadStatus {
+  new
+  qualified
+  lost
+}
+
+model Deal {
+  id                Int       @id @default(autoincrement())
+  leadId            Int
+  title             String
+  amount            Decimal   @db.Decimal(10, 2)
+  stage             DealStage
+  expectedCloseDate DateTime?
+  createdAt         DateTime  @default(now())
+  lead              Lead      @relation(fields: [leadId], references: [id])
+
+  @@index([stage])
+}
+
+enum DealStage {
+  prospecting
+  proposal
+  negotiation
+  won
+  lost
+}
+
+model Activity {
+  id        Int       @id @default(autoincrement())
+  leadId    Int
+  type      ActivityType
+  content   String
+  dueDate   DateTime?
+  completed Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  lead      Lead      @relation(fields: [leadId], references: [id])
+
+  @@index([leadId, completed, dueDate])
+}
+
+enum ActivityType {
+  note
+  task
+  call
+  email
+}
