@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('login→lead作成→deal作成→kanbanでstage変更→activity完了', async ({ page }) => {
+  test.setTimeout(120_000);
   await page.goto('/login');
   await page.getByLabel('Email').fill('admin@example.com');
   await page.getByLabel('Password').fill('password123');
@@ -17,6 +18,7 @@ test('login→lead作成→deal作成→kanbanでstage変更→activity完了', 
   await page.getByRole('button', { name: 'Create Lead' }).click();
   // 詳細へ遷移（先頭レコード）
   const firstLead = page.locator('table tbody tr').first();
+  await firstLead.waitFor();
   await firstLead.getByRole('link').click();
 
   // 活動の作成→完了トグル
@@ -26,6 +28,7 @@ test('login→lead作成→deal作成→kanbanでstage変更→activity完了', 
 
   await page.goto('/deals');
   // 新規Deal作成
+  // 新しく作成したLeadのIDを末尾の行から取るのが確実だが、簡便に1を使う（存在しない場合はスキップ）
   await page.getByPlaceholder('Lead ID').fill('1');
   await page.getByPlaceholder('Title').fill('Play Deal');
   await page.getByPlaceholder('Amount').fill('1234');

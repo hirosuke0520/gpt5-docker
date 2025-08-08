@@ -4,7 +4,10 @@ export default defineConfig({
   testDir: './',
   use: {
     baseURL: 'http://localhost:3000',
-    headless: true
+    headless: true,
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure'
   },
   projects: [
     {
